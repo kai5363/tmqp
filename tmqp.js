@@ -83,7 +83,11 @@ class Tmqp {
             reqBuffer = reqBuffer.slice(marker + 4);
             try {
               const object = JSON.parse(reqHeader);
-              if (object.method === 'consume' || object.method === 'produce' || object.method === 'delete') {
+              if (
+                object.method === 'consume'
+                || object.method === 'produce'
+                || object.method === 'delete'
+              ) {
                 myEmitter.emit(object.id, object);
               }
             } catch (error) {
@@ -117,11 +121,10 @@ class Tmqp {
         queue: queue.replace(/\s/g, ''),
         messages: typeof messages === 'string' ? [messages] : [...messages],
       };
-      // console.log(`${JSON.stringify(produceObj)}`);
       // this[`Timeout${produceObj.id}`] = setTimeout(() => {
-      //   this.reconnect();
-      //   console.log('Oops! Can not get the response from server');
-      //   reject(new Error('Oops! Can not get the response from server'));
+        //   this.reconnect();
+        //   console.log('Oops! Can not get the response from server');
+        //   reject(new Error('Oops! Can not get the response from server'));
       // }, this.connectionTimeout);
       const produceHandler = (data) => {
         clearTimeout(this[`Timeout${produceObj.id}`]);
@@ -147,7 +150,6 @@ class Tmqp {
 
       const consumeHandler = (data) => {
         clearTimeout(this[`Timeout${consumeObj.id}`]);
-        console.log(`consume: ${JSON.stringify(data)}`);
         if (!data.success) {
           myEmitter.removeListener(consumeObj.id, consumeHandler);
           reject(data.message);
